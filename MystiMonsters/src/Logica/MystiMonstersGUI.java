@@ -27,8 +27,8 @@ public class MystiMonstersGUI extends JFrame {
 
         // Inicializa la lista de mapas y el índice del mapa actual
         mapas = new ArrayList<>();
-        mapas.add("resources/mapa2.png");
-        mapas.add("resources/maparocapeque.png");
+        mapas.add("Resources/mapa2.png");
+        mapas.add("Resources/maparocapeque.png");
         mapaActual = 0;
 
         // Inicializa la posición del personaje
@@ -39,9 +39,9 @@ public class MystiMonstersGUI extends JFrame {
         background = new JLabel(new ImageIcon(mapas.get(mapaActual)));
         background.setBounds(0, 0, mapaAncho, mapaAlto);
 
-        // Configura el personaje "Entrenador" y hazlo más pequeño
-        entrenador = new JLabel(new ImageIcon("resources/entrenador.png"));
-        entrenador.setBounds(entrenadorX, entrenadorY, 50, 50); // Cambia el tamaño a 50x50
+        // Configura el personaje "Entrenador"
+        entrenador = new JLabel(new ImageIcon("Resources/entrenador.png"));
+        entrenador.setBounds(entrenadorX, entrenadorY, 50, 50); // Tamaño a 50x50
 
         // Agrega el fondo al contenedor primero
         getContentPane().add(background);
@@ -78,21 +78,26 @@ public class MystiMonstersGUI extends JFrame {
                     if (entrenadorY - step >= 0) {
                         entrenadorY -= step;
                     }
+
+                    // Verifica si el personaje ha llegado a la parte superior del mapa2.png
+                    if (entrenadorY <= 0 && background.getIcon().toString().equals("Resources/mapa2.png")) {
+                        // Cambia al mapa de "agua.png"
+                        background.setIcon(new ImageIcon("Resources/agua.png"));
+                    }
                 } else if (keyCode == KeyEvent.VK_DOWN) {
                     // Mover el personaje hacia abajo
                     if (entrenadorY + step + 50 <= mapaAlto) {
                         entrenadorY += step;
                     }
-                }
 
-                // Verifica si el personaje ha llegado al límite del mapa
-                if (entrenadorX >= 350) {
-                    if (mapaActual < mapas.size() - 1) {
-                        // Cambia al siguiente mapa de la lista
-                        mapaActual++;
-                        background.setIcon(new ImageIcon(mapas.get(mapaActual)));
-                        entrenadorX = 100; // Reinicia la posición del personaje
+                    // Verifica si el personaje ha llegado al fondo del mapa
+                    if (entrenadorY >= mapaAlto - 50) {
+                        // Cambia al mapa de "maparocapeque.png"
+                        background.setIcon(new ImageIcon("Resources/maparocapeque.png"));
                     }
+                } else if (keyCode == KeyEvent.VK_C) {
+                    // Cambia al mapa principal ("mapa2.png") al presionar la tecla "c"
+                    background.setIcon(new ImageIcon("Resources/mapa2.png"));
                 }
 
                 // Actualiza la posición del personaje
@@ -105,15 +110,16 @@ public class MystiMonstersGUI extends JFrame {
             }
         });
 
-        setFocusable(true);
-        requestFocusInWindow();
+        setFocusable(true); // Permite que la ventana obtenga el enfoque para capturar eventos de teclado
+        requestFocusInWindow();  // Solicita el enfoque de la ventana para que pueda recibir eventos de teclado
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
+        SwingUtilities.invokeLater(() -> {  //Se encarga de iniciar la interfaz gráfica
             new MystiMonstersGUI();
         });
     }
 }
+
 
 
