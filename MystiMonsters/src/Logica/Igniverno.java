@@ -2,39 +2,23 @@ package Logica;
 
 public class Igniverno extends MystiMonstersGeneral implements IFuego{
 
-	
-	public Igniverno() {
-		
-	}
-	
-	@Override
-	public void atacarPunioFuego() {
-		System.out.print("Hola soy Igniverno y este es mi ataque de PunioFuego'\n'");		
-	}
 
-	@Override
-	public void atacarLanzallamas() {
-		System.out.print("Hola soy Igniverno y este es mi ataque de Lanzallamas'\n'");		
-	}
+    public Igniverno(String nombre, int salud, int ataque, int defensa) {
+        super(nombre, salud, ataque, defensa);
+    }
 
-	@Override
-	public void atacarAscuas() {
-		System.out.print("Hola soy Igniverno y este es mi ataque de Ascuas'\n'");		
-	}
+    @Override
+    public void controlarLlamasNaturaleza() {
 
-	@Override
-	protected void atacarPlacaje() {
-		System.out.print("Hola soy Igniverno y este es mi ataque de Placaje'\n'");		
-	}
+    }
 
-	@Override
-	protected void atacarAraniazo() {
-		System.out.print("Hola soy Igniverno y este es mi ataque de Araniazo'\n'");		
-	}
+    @Override
+    public void controlarLlamas() {
 
-	@Override
-	protected void atacarMordisco() {
-		System.out.print("Hola soy Igniverno y este es mi ataque de Mordisco'\n'");		
-	}
+    }
 
+    @Override
+    public void controlarCalor() {
+
+    }
 }
