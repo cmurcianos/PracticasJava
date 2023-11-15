@@ -1,55 +1,72 @@
 package Logica;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MystiMonstersGUI extends JFrame {
 
-    private JLabel background;
-    private JLabel entrenador;
-    private int entrenadorX; // Posición X del personaje
-    private int entrenadorY; // Posición Y del personaje
+    private BufferedImage backgroundImage;
+    private BufferedImage floraflameImage;
+    private BufferedImage entrenadorImage;
 
-    private final int mapaAncho = 400; // Ancho del mapa
-    private final int mapaAlto = 600; // Alto del mapa
+    private int entrenadorX;
+    private int entrenadorY;
 
-    private List<String> mapas; // Lista de nombres de mapas
-    private int mapaActual; // Índice del mapa actual
+    private final int mapaAncho = 400;
+    private final int mapaAlto = 600;
+
+    private List<String> mapas;
+    private int mapaActual;
 
     public MystiMonstersGUI() {
-        setTitle("MystiMonsters Game");
-        setSize(mapaAncho, mapaAlto);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
+        super("MystiMonsters");
 
-        // Inicializa la lista de mapas y el índice del mapa actual
+        try {
+            // Carga la imagen inicial del mapa (mapa2.png)
+            backgroundImage = ImageIO.read(new File("Resources/mapa2.png"));
+            // Carga la imagen de Floraflame
+            floraflameImage = ImageIO.read(new File("Resources/floraflame.png"));
+            // Carga la imagen del entrenador
+            entrenadorImage = ImageIO.read(new File("Resources/entrenador.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        JPanel panel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                drawImages(g);
+            }
+        };
+
+        add(panel);
+
+        // Configuración básica de la ventana
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        pack();
+        setLocationRelativeTo(null);
+        setVisible(true);
+
+        // Inicializa la lista de mapas
         mapas = new ArrayList<>();
         mapas.add("Resources/mapa2.png");
         mapas.add("Resources/maparocapeque.png");
+        mapas.add("Resources/agua.png");
+        mapas.add("Resources/fuego.png");
         mapaActual = 0;
 
         // Inicializa la posición del personaje
         entrenadorX = 100;
         entrenadorY = 400;
-
-        // Configura el fondo con el mapa actual
-        background = new JLabel(new ImageIcon(mapas.get(mapaActual)));
-        background.setBounds(0, 0, mapaAncho, mapaAlto);
-
-        // Configura el personaje "Entrenador"
-        entrenador = new JLabel(new ImageIcon("Resources/entrenador.png"));
-        entrenador.setBounds(entrenadorX, entrenadorY, 50, 50); // Tamaño a 50x50
-
-        // Agrega el fondo al contenedor primero
-        getContentPane().add(background);
-        // Luego, agrega el personaje para que esté en la parte delantera
-        getContentPane().add(entrenador, 0);
-
-        setLayout(null);  // Usamos un diseño absoluto para posicionar los componentes
-        setVisible(true);
 
         // Agrega un KeyListener para controlar el movimiento del personaje
         addKeyListener(new KeyListener() {
@@ -67,6 +84,12 @@ public class MystiMonstersGUI extends JFrame {
                     // Mover el personaje hacia la izquierda
                     if (entrenadorX - step >= 0) {
                         entrenadorX -= step;
+
+                        // Cambia al mapa de "fuego.png" cuando estás en la izquierda de "mapa2.png"
+                        if (mapaActual == 0 && entrenadorX == 0) {
+                            mapaActual = 3;
+                            backgroundImage = loadImage(mapas.get(mapaActual));
+                        }
                     }
                 } else if (keyCode == KeyEvent.VK_RIGHT) {
                     // Mover el personaje hacia la derecha
@@ -79,10 +102,17 @@ public class MystiMonstersGUI extends JFrame {
                         entrenadorY -= step;
                     }
 
-                    // Verifica si el personaje ha llegado a la parte superior del mapa2.png
-                    if (entrenadorY <= 0 && background.getIcon().toString().equals("Resources/mapa2.png")) {
-                        // Cambia al mapa de "agua.png"
-                        background.setIcon(new ImageIcon("Resources/agua.png"));
+                    // Cambia el mapa según la ubicación del entrenador
+                    if (entrenadorY <= 0 && mapaActual == 0) {
+                        // Cambia al mapa de "agua.png" cuando estás arriba del mapa2.png
+                        mapaActual = 2;
+                        backgroundImage = loadImage(mapas.get(mapaActual));
+                        entrenadorY = mapaAlto - 50;
+                    } else if (entrenadorY <= 0 && mapaActual == 3) {
+                        // Cambia al mapa de "mapa2.png" cuando estás arriba del fuego.png
+                        mapaActual = 0;
+                        backgroundImage = loadImage(mapas.get(mapaActual));
+                        entrenadorY = mapaAlto - 50;
                     }
                 } else if (keyCode == KeyEvent.VK_DOWN) {
                     // Mover el personaje hacia abajo
@@ -90,18 +120,22 @@ public class MystiMonstersGUI extends JFrame {
                         entrenadorY += step;
                     }
 
-                    // Verifica si el personaje ha llegado al fondo del mapa
-                    if (entrenadorY >= mapaAlto - 50) {
+                    // Cambia el mapa cuando estás en la parte inferior del mapa2.png
+                    if (entrenadorY >= mapaAlto - 50 && mapaActual == 0) {
                         // Cambia al mapa de "maparocapeque.png"
-                        background.setIcon(new ImageIcon("Resources/maparocapeque.png"));
+                        mapaActual = 1;
+                        backgroundImage = loadImage(mapas.get(mapaActual));
+                        entrenadorY = 0;
                     }
                 } else if (keyCode == KeyEvent.VK_C) {
                     // Cambia al mapa principal ("mapa2.png") al presionar la tecla "c"
-                    background.setIcon(new ImageIcon("Resources/mapa2.png"));
+                    mapaActual = 0;
+                    backgroundImage = loadImage(mapas.get(mapaActual));
+                    entrenadorY = 400;
                 }
 
                 // Actualiza la posición del personaje
-                entrenador.setBounds(entrenadorX, entrenadorY, 50, 50);
+                repaint();
             }
 
             @Override
@@ -110,16 +144,37 @@ public class MystiMonstersGUI extends JFrame {
             }
         });
 
-        setFocusable(true); // Permite que la ventana obtenga el enfoque para capturar eventos de teclado
-        requestFocusInWindow();  // Solicita el enfoque de la ventana para que pueda recibir eventos de teclado
+        setFocusable(true);
+        requestFocusInWindow();
+    }
+
+    private void drawImages(Graphics g) {
+        if (backgroundImage != null && floraflameImage != null) {
+            // Dibuja la imagen del mapa
+            g.drawImage(backgroundImage, 0, 0, null);
+
+            // Dibuja la imagen de Floraflame en una posición específica
+            int floraflameX = 100; // Posición X de Floraflame en el mapa
+            int floraflameY = 150; // Posición Y de Floraflame en el mapa
+            g.drawImage(floraflameImage, floraflameX, floraflameY, null);
+
+            // Dibuja la imagen del entrenador en la posición actual
+            g.drawImage(entrenadorImage, entrenadorX, entrenadorY, null);
+        }
+    }
+
+    private BufferedImage loadImage(String fileName) {
+        try {
+            return ImageIO.read(new File(fileName));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {  //Se encarga de iniciar la interfaz gráfica
-            new MystiMonstersGUI();
-        });
+        SwingUtilities.invokeLater(() -> new MystiMonstersGUI());
     }
 }
-
 
 
