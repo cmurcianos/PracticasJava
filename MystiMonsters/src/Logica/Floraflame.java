@@ -1,36 +1,35 @@
 package Logica;
 
-public class Floraflame extends MystiMonstersGeneral implements IPlanta {
-	
-	public Floraflame() {
-		
-	}
+public class Floraflame extends MystiMonstersGeneral implements IPlanta, IFuego{
 
-	@Override
-	public void atacarDrenaje() {
-		System.out.print("Hola soy Floraflame y este es mi ataque de Drenaje'\n'");
-	}
 
-	@Override
-	public void atacarParalizar() {
-		System.out.print("Hola soy Floraflame y este es mi ataque de Paralizar'\n'");		
-	}
+    private int poderFuego;
 
-	@Override
-	protected void atacarPlacaje() {
-		System.out.print("Hola soy Floraflame y este es mi ataque de Pacaje'\n'");		
-	}
+    public Floraflame(String nombre, int salud, int ataque, int defensa, int poderFuego) {
+        super(nombre, salud, ataque, defensa);
+        this.poderFuego = poderFuego;
+    }
 
-	@Override
-	protected void atacarAraniazo() {
-		System.out.print("Hola soy Floraflame y este es mi ataque de Araniazo'\n'");		
-	}
+    @Override
+    public void controlarLlamasNaturaleza() {
+        // Implementación de controlar llamas de la naturaleza
+    }
 
-	@Override
-	protected void atacarMordisco() {
-		System.out.print("Hola soy Floraflame y este es mi ataque de Mordisco'\n'");		
-	}
-	
-	  
-	
+    @Override
+    public void controlarLlamas() {
+        // Implementación de controlar llamas
+    }
+
+    @Override
+    public void controlarCalor() {
+        // Implementación de controlar calor
+    }
+
+   /* public void ataqueFuego(MystiMonsters enemigo) {
+        enemigo.recibirAtaque(this.poderFuego);
+    }
+*/
+
+
+
 }
