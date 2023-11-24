@@ -9,36 +9,109 @@ import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class MystiMonstersGUI extends JFrame {
+    public class MystiMonstersGUI extends JFrame implements MovimientoListener{
 
-    private BufferedImage backgroundImage;
-    private BufferedImage floraflameImage;
-    private BufferedImage entrenadorImage;
+        private BufferedImage backgroundImage;
+        private BufferedImage floraflameImage;
+        private BufferedImage ignivernoImage;
+        private BufferedImage rocluminisImage;
+        private BufferedImage entrenadorImage;
+        private BufferedImage mochilaImage;
 
-    private int entrenadorX;
-    private int entrenadorY;
+        private Point mochilaPosition;
+        private int entrenadorX;
+        private int entrenadorY;
 
-    private final int mapaAncho = 400;
-    private final int mapaAlto = 600;
+        private final int mapaAncho = 400;
+        private final int mapaAlto = 600;
 
-    private List<String> mapas;
-    private int mapaActual;
+        private List<String> mapas;
+        private int mapaActual;
+
+    private Map<Integer, Boolean> mostrarImagenesMap;
+
+    private boolean floraflameEnAgua = false;
+    private boolean cercaDeIgniverno = false;
+    private final int distanciaProximidad = 50;
+
+    private int saludEntrenador = 100;
+    private int saludIgniverno = 100;
+
+    private List<String> mochila;
+
+
+    private Movimiento movimiento;
+
+
+
+    public int getEntrenadorX() {
+            return entrenadorX;
+        }
+    public int getEntrenadorY() {
+            return entrenadorY;
+        }
+     public void setEntrenadorX(int x) {
+            entrenadorX = x;
+        }
+     public void setEntrenadorY(int y) {
+            entrenadorY = y;
+        }
+        public int getMapaAncho() {
+            return mapaAncho;
+        }
+        public int getMapaAlto() {
+            return mapaAlto;
+        }
+        public int getMapaActual() {
+            return mapaActual;
+        }
+        public boolean isCercaDeIgniverno() {
+            return cercaDeIgniverno;
+        }
 
     public MystiMonstersGUI() {
         super("MystiMonsters");
 
+
+
+        // Inicializa la mochila
+        mochila = new ArrayList<>();
+
+        movimiento = new Movimiento(this);
+
+
         try {
-            // Carga la imagen inicial del mapa (mapa2.png)
             backgroundImage = ImageIO.read(new File("Resources/mapa2.png"));
-            // Carga la imagen de Floraflame
             floraflameImage = ImageIO.read(new File("Resources/floraflame.png"));
-            // Carga la imagen del entrenador
+            ignivernoImage = ImageIO.read(new File("Resources/igniverno.png"));
+            rocluminisImage = ImageIO.read(new File("Resources/rocluminis.png"));
             entrenadorImage = ImageIO.read(new File("Resources/entrenador.png"));
+            mochilaImage = ImageIO.read(new File("Resources/mochila.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
+        mochilaPosition = new Point(getWidth() - mochilaImage.getWidth(), getHeight() - mochilaImage.getHeight());
+        mapas = new ArrayList<>();
+        mapas.add("Resources/mapa2.png");
+        mapas.add("Resources/maparocapeque.png");
+        mapas.add("Resources/agua.png");
+        mapas.add("Resources/fuego.png");
+        mapaActual = 0;
+
+        entrenadorX = 100;
+        entrenadorY = 400;
+
+        mostrarImagenesMap = new HashMap<>();
+        mostrarImagenesMap.put(0, false);
+        mostrarImagenesMap.put(3, false);
+        mostrarImagenesMap.put(1, false);
+        mostrarImagenesMap.put(2, false);
+
+        mochilaPosition = new Point(getWidth() - 40, getHeight() - 70);
 
         JPanel panel = new JPanel() {
             @Override
@@ -50,25 +123,11 @@ public class MystiMonstersGUI extends JFrame {
 
         add(panel);
 
-        // Configuración básica de la ventana
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         pack();
         setLocationRelativeTo(null);
         setVisible(true);
 
-        // Inicializa la lista de mapas
-        mapas = new ArrayList<>();
-        mapas.add("Resources/mapa2.png");
-        mapas.add("Resources/maparocapeque.png");
-        mapas.add("Resources/agua.png");
-        mapas.add("Resources/fuego.png");
-        mapaActual = 0;
-
-        // Inicializa la posición del personaje
-        entrenadorX = 100;
-        entrenadorY = 400;
-
-        // Agrega un KeyListener para controlar el movimiento del personaje
         addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
@@ -77,65 +136,7 @@ public class MystiMonstersGUI extends JFrame {
 
             @Override
             public void keyPressed(KeyEvent e) {
-                int keyCode = e.getKeyCode();
-                int step = 10; // Cantidad de píxeles para mover al personaje
-
-                if (keyCode == KeyEvent.VK_LEFT) {
-                    // Mover el personaje hacia la izquierda
-                    if (entrenadorX - step >= 0) {
-                        entrenadorX -= step;
-
-                        // Cambia al mapa de "fuego.png" cuando estás en la izquierda de "mapa2.png"
-                        if (mapaActual == 0 && entrenadorX == 0) {
-                            mapaActual = 3;
-                            backgroundImage = loadImage(mapas.get(mapaActual));
-                        }
-                    }
-                } else if (keyCode == KeyEvent.VK_RIGHT) {
-                    // Mover el personaje hacia la derecha
-                    if (entrenadorX + step + 50 <= mapaAncho) {
-                        entrenadorX += step;
-                    }
-                } else if (keyCode == KeyEvent.VK_UP) {
-                    // Mover el personaje hacia arriba
-                    if (entrenadorY - step >= 0) {
-                        entrenadorY -= step;
-                    }
-
-                    // Cambia el mapa según la ubicación del entrenador
-                    if (entrenadorY <= 0 && mapaActual == 0) {
-                        // Cambia al mapa de "agua.png" cuando estás arriba del mapa2.png
-                        mapaActual = 2;
-                        backgroundImage = loadImage(mapas.get(mapaActual));
-                        entrenadorY = mapaAlto - 50;
-                    } else if (entrenadorY <= 0 && mapaActual == 3) {
-                        // Cambia al mapa de "mapa2.png" cuando estás arriba del fuego.png
-                        mapaActual = 0;
-                        backgroundImage = loadImage(mapas.get(mapaActual));
-                        entrenadorY = mapaAlto - 50;
-                    }
-                } else if (keyCode == KeyEvent.VK_DOWN) {
-                    // Mover el personaje hacia abajo
-                    if (entrenadorY + step + 50 <= mapaAlto) {
-                        entrenadorY += step;
-                    }
-
-                    // Cambia el mapa cuando estás en la parte inferior del mapa2.png
-                    if (entrenadorY >= mapaAlto - 50 && mapaActual == 0) {
-                        // Cambia al mapa de "maparocapeque.png"
-                        mapaActual = 1;
-                        backgroundImage = loadImage(mapas.get(mapaActual));
-                        entrenadorY = 0;
-                    }
-                } else if (keyCode == KeyEvent.VK_C) {
-                    // Cambia al mapa principal ("mapa2.png") al presionar la tecla "c"
-                    mapaActual = 0;
-                    backgroundImage = loadImage(mapas.get(mapaActual));
-                    entrenadorY = 400;
-                }
-
-                // Actualiza la posición del personaje
-                repaint();
+                movimiento.keyPressed(e);
             }
 
             @Override
@@ -144,23 +145,89 @@ public class MystiMonstersGUI extends JFrame {
             }
         });
 
+
+
         setFocusable(true);
         requestFocusInWindow();
     }
 
     private void drawImages(Graphics g) {
-        if (backgroundImage != null && floraflameImage != null) {
-            // Dibuja la imagen del mapa
+        if (backgroundImage != null) {
             g.drawImage(backgroundImage, 0, 0, null);
-
-            // Dibuja la imagen de Floraflame en una posición específica
-            int floraflameX = 100; // Posición X de Floraflame en el mapa
-            int floraflameY = 150; // Posición Y de Floraflame en el mapa
-            g.drawImage(floraflameImage, floraflameX, floraflameY, null);
-
-            // Dibuja la imagen del entrenador en la posición actual
+            drawMapSpecificImages(g);
             g.drawImage(entrenadorImage, entrenadorX, entrenadorY, null);
+            drawHealthBars(g);
+
+            if (mochilaImage != null) {
+                g.drawImage(mochilaImage, mochilaPosition.x, mochilaPosition.y, null);
+            }
         }
+    }
+
+    private void drawMapSpecificImages(Graphics g) {
+        switch (mapaActual) {
+            case 0:
+                if (mostrarImagenesMap.get(0) && !floraflameEnAgua) {
+                    int floraflameX = 100;
+                    int floraflameY = 150;
+                    g.drawImage(floraflameImage, floraflameX, floraflameY, null);
+                }
+                break;
+            case 3:
+                boolean enBatallaConIgniverno = false;
+                if (mostrarImagenesMap.get(3) && !enBatallaConIgniverno) {
+                    int ignivernoX = 100;
+                    int ignivernoY = 150;
+                    g.drawImage(ignivernoImage, ignivernoX, ignivernoY, null);
+                }
+                break;
+            case 1:
+                int rocluminisX = (mapaAncho - rocluminisImage.getWidth()) / 2;
+                int rocluminisY = (mapaAlto - rocluminisImage.getHeight()) / 2;
+                g.drawImage(rocluminisImage, rocluminisX, rocluminisY, null);
+                break;
+            case 2:
+                if (mostrarImagenesMap.get(2)) {
+                    int floraflameX = 100;
+                    int floraflameY = 150;
+                    g.drawImage(floraflameImage, floraflameX, floraflameY, null);
+                    floraflameEnAgua = true;
+                }
+                break;
+        }
+    }
+
+    private void drawHealthBars(Graphics g) {
+        g.setColor(Color.RED);
+        g.fillRect(10, 10, saludEntrenador * 2, 20);
+        g.setColor(Color.BLACK);
+        g.drawString("Entrenador", 10, 40);
+
+        if (cercaDeIgniverno) {
+            g.setColor(Color.BLUE);
+            g.fillRect(10, 60, saludIgniverno * 2, 20);
+            g.setColor(Color.BLACK);
+            g.drawString("Igniverno", 10, 90);
+        }
+    }
+
+    void verificarProximidad() {
+        int ignivernoX = 100;
+        int ignivernoY = 150;
+        int distancia = (int) Math.sqrt(Math.pow(entrenadorX - ignivernoX, 2) + Math.pow(entrenadorY - ignivernoY, 2));
+        cercaDeIgniverno = distancia < distanciaProximidad;
+    }
+
+    void cambiarMapa(int nuevoMapa) {
+        mapaActual = nuevoMapa;
+        backgroundImage = loadImage(mapas.get(mapaActual));
+        ocultarImagenesEspecificas();
+        floraflameEnAgua = false;
+        mostrarImagenesMap.put(mapaActual, true);
+    }
+
+    private void ocultarImagenesEspecificas() {
+        mostrarImagenesMap.replaceAll((k, v) -> false);
     }
 
     private BufferedImage loadImage(String fileName) {
@@ -172,9 +239,94 @@ public class MystiMonstersGUI extends JFrame {
         }
     }
 
+    void mostrarVentanaCaptura() {
+        int option = JOptionPane.showOptionDialog(this,
+                "Te has encontrado con Igniverno, ¿Quieres capturarlo?",
+                "Encuentro con Igniverno",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                new Object[]{"SI", "NO"},
+                "SI");
+
+        if (option == JOptionPane.YES_OPTION) {
+            mostrarVentanaAtaques();
+        } else {
+            System.out.println("Has decidido no capturar a Igniverno");
+        }
+    }
+
+    private void mostrarVentanaAtaques() {
+        Object[] ataques = {"Lanzallamas", "Bomba de fuego", "MOAB"};
+        Object seleccion = JOptionPane.showInputDialog(this,
+                "Selecciona un ataque:",
+                "Ataques",
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                ataques,
+                ataques[0]);
+
+        if (seleccion != null) {
+            String ataqueSeleccionado = seleccion.toString();
+            mostrarInformacionAtaque(ataqueSeleccionado);
+        }
+    }
+
+    private void mostrarInformacionAtaque(String ataque) {
+        String mensaje = "";
+        if (ataque.equals("Lanzallamas")) {
+            mensaje = "Informacion ataque Lanzallamas: Se trata de un ataque muy fuerte pero poco dañino a los MystiMonster de fuego, esto restará una puntuacion de 25 pts";
+        } else if (ataque.equals("Bomba de fuego")) {
+            mensaje = "Muy dañino por la explosión, restará 50 pts";
+        } else if (ataque.equals("MOAB")) {
+            mensaje = "Bomba ultrasónica, que resta 75 pts";
+        }
+
+        int option = JOptionPane.showOptionDialog(this,
+                mensaje + "\n¿Quieres utilizar este ataque?",
+                "Información del Ataque",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.INFORMATION_MESSAGE,
+                null,
+                new Object[]{"Utilizar", "No utilizar"},
+                "Utilizar");
+
+        if (option == JOptionPane.YES_OPTION) {
+            realizarAtaque(ataque);
+        } else {
+            mostrarVentanaAtaques();
+        }
+    }
+
+    private void realizarAtaque(String ataque) {
+        boolean ataqueRealizado = true;
+        int puntuacionAleatoria = (int) (Math.random() * 21) + 10;
+        saludIgniverno -= puntuacionAleatoria;
+        mochila.add(ataque);
+        System.out.println("¡Ataque " + ataque + " ejecutado con puntuación " + puntuacionAleatoria + "!");
+        repaint();
+    }
+
+    void mostrarMochila() {
+        StringBuilder contenidoMochila = new StringBuilder("Contenido de la Mochila:\n");
+        if (mochila.isEmpty()) {
+            contenidoMochila.append("La mochila está vacía.");
+        } else {
+            for (String item : mochila) {
+                contenidoMochila.append("- ").append(item).append("\n");
+            }
+        }
+
+        JOptionPane.showMessageDialog(this, contenidoMochila.toString(), "Mystidex Info", JOptionPane.INFORMATION_MESSAGE);
+    }
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new MystiMonstersGUI());
     }
-}
 
+        @Override
+        public void keyPressed(KeyEvent e) {
+
+        }
+    }
 
