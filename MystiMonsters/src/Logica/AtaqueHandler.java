@@ -1,30 +1,20 @@
 package Logica;
 
-import javax.swing.*;
-import java.awt.*;
+public class AtaqueHandler {
 
-public class BarraDeVidaDialog extends JDialog {
+    public static void ejecutarAtaque(Entrenador entrenador, Mochila mochila) {
+        // Simulate attack logic
+        // You can customize this logic based on your game requirements
+        System.out.println("Ataque mortal. Monstruo destruido y añadido a la mochila");
 
-    public BarraDeVidaDialog(JFrame parent, Monstruo monstruo) {
-        super(parent, "Barra de Vida", true);
-        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        setSize(200, 100);
-        setLocationRelativeTo(parent);
+        // Assume you have a Monstruo object that represents the defeated Monstruo
+        Monstruo monstruo;
+        monstruo = new Monstruo("Defeated Monstruo");
 
-        JPanel panel = new JPanel(new BorderLayout());
-        JLabel label = new JLabel("Vida de " + monstruo.getNombre());
-        panel.add(label, BorderLayout.NORTH);
+        // Add the defeated Monstruo to the mochila
+        mochila.agregarMonstruo(monstruo);
 
-        JProgressBar progressBar = new JProgressBar(0, monstruo.getVidaMaxima());
-        progressBar.setValue(monstruo.getVidaActual());
-        progressBar.setStringPainted(true);
-        panel.add(progressBar, BorderLayout.CENTER);
-
-        JButton cerrarButton = new JButton("Cerrar");
-        cerrarButton.addActionListener(e -> dispose());
-        panel.add(cerrarButton, BorderLayout.SOUTH);
-
-        setContentPane(panel);
+        // Move the entrenador back to the mapa principal
+        entrenador.setLocation(mochila.MAPA_PRINCIPAL);
     }
 }
-
