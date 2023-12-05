@@ -4,13 +4,23 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * La clase VentanaAtaque representa una ventana de selección de ataques para el juego MystiMonsters.
+ */
 public class VentanaAtaque {
-    private int ataqueSeleccionado;
-    private ActionListener onAtaqueSeleccionadoListener;
 
+    private int ataqueSeleccionado; // Almacena el ataque seleccionado por el jugador.
+    private ActionListener onAtaqueSeleccionadoListener; // Listener para manejar eventos de selección de ataque.
+
+    /**
+     * Constructor de la clase VentanaAtaque.
+     */
     public VentanaAtaque() {
     }
 
+    /**
+     * Muestra la ventana de selección de ataques.
+     */
     public void mostrar() {
         // Crear el marco de la ventana
         JFrame ventana = new JFrame("Ventana de Ataque");
@@ -61,25 +71,40 @@ public class VentanaAtaque {
         ventana.setVisible(true);
     }
 
+    /**
+     * Establece el listener para manejar eventos de selección de ataque.
+     *
+     * @param listener El ActionListener que manejará los eventos de selección de ataque.
+     */
     public void setOnAtaqueSeleccionadoListener(ActionListener listener) {
         this.onAtaqueSeleccionadoListener = listener;
     }
 
+    /**
+     * Notifica a los listeners que se ha seleccionado un ataque.
+     */
     private void notificarSeleccion() {
         if (onAtaqueSeleccionadoListener != null) {
             onAtaqueSeleccionadoListener.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, null));
         }
     }
 
+    /**
+     * Muestra la ventana de resultado de ataque.
+     */
     private void mostrarResultadoAtaque() {
         // Crear la ventana de resultado de ataque
-        Monstruo monstruo = null;
+        Monstruo monstruo = null; // Reemplazar con el objeto Monstruo real
         VentanaResultadoAtaque resultadoAtaque = new VentanaResultadoAtaque(monstruo, ataqueSeleccionado);
         resultadoAtaque.mostrar();
     }
 
+    /**
+     * Obtiene el ataque seleccionado por el jugador.
+     *
+     * @return El número del ataque seleccionado (1 o 2).
+     */
     public int getAtaqueSeleccionado() {
         return ataqueSeleccionado;
     }
 }
-
