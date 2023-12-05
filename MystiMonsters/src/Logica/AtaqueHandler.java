@@ -1,30 +1,21 @@
-/**
- * La clase AtaqueHandler proporciona métodos para manejar la ejecución de un ataque en el juego.
- * Puede personalizar la lógica de ataque según los requisitos específicos del juego.
- */
 package Logica;
 
 public class AtaqueHandler {
 
-    /**
-     * Simula la ejecución de un ataque en el juego.
-     *
-     * @param entrenador El objeto Entrenador que realiza el ataque.
-     * @param mochila    La Mochila del Entrenador que se utiliza para almacenar el Monstruo derrotado.
-     */
     public static void ejecutarAtaque(Entrenador entrenador, Mochila mochila) {
-        // Simula la lógica del ataque
-        // Puede personalizar esta lógica según los requisitos del juego
+        // Simulate attack logic
+        // You can customize this logic based on your game requirements
         System.out.println("Ataque mortal. Monstruo destruido y añadido a la mochila");
 
-        // Se asume que hay un objeto Monstruo que representa al Monstruo derrotado
+        // Assume you have a Monstruo object that represents the defeated Monstruo
         Monstruo monstruo;
-        monstruo = new Monstruo("Monstruo Derrotado");
+        monstruo = new Monstruo("Defeated Monstruo");
 
-        // Agrega el Monstruo derrotado a la mochila
+        // Add the defeated Monstruo to the mochila
         mochila.agregarMonstruo(monstruo);
 
-        // Mueve al entrenador de vuelta al mapa principal
+        // Move the entrenador back to the mapa principal
         entrenador.setLocation(mochila.MAPA_PRINCIPAL);
     }
 }
+
