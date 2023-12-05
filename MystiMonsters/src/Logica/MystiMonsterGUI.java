@@ -1,5 +1,6 @@
-
-
+/**
+ * El paquete Logica contiene las clases relacionadas con la lógica del juego.
+ */
 package Logica;
 
 import javax.swing.*;
@@ -7,14 +8,22 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * La clase MystiMonsterGUI representa la interfaz gráfica de usuario del juego MystiMonsters.
+ */
 public class MystiMonsterGUI {
-    private Mapa mapa;
-    private JFrame frame;
-    private boolean mochilaVisible;
-    private VentanaBienvenida ventanaBienvenida;
-    private Entrenador entrenador;
 
+    private Mapa mapa; // El mapa asociado a la interfaz gráfica.
+    private JFrame frame; // El marco principal de la interfaz.
+    private boolean mochilaVisible; // Indica si la mochila está visible.
+    private VentanaBienvenida ventanaBienvenida; // Ventana de bienvenida.
+    private Entrenador entrenador; // Entrenador asociado a la interfaz.
 
+    /**
+     * Constructor de la clase MystiMonsterGUI.
+     *
+     * @param mapa El mapa asociado a la interfaz.
+     */
     public MystiMonsterGUI(Mapa mapa) {
         this.mapa = mapa;
         this.frame = new JFrame("MystiMonsters");
@@ -52,9 +61,11 @@ public class MystiMonsterGUI {
         frame.getContentPane().add(mainPanel);
 
         this.mochilaVisible = false;
-
     }
 
+    /**
+     * Muestra la ventana de bienvenida y, después de cerrarla, muestra la imagen del entrenador.
+     */
     private void mostrarVentanaBienvenida() {
         ventanaBienvenida.setVisible(true);
 
@@ -64,6 +75,9 @@ public class MystiMonsterGUI {
         }
     }
 
+    /**
+     * Muestra la imagen del entrenador en el marco principal.
+     */
     private void mostrarEntrenador() {
         frame.getContentPane().removeAll();
         frame.getContentPane().add(entrenador, BorderLayout.CENTER);
@@ -72,6 +86,9 @@ public class MystiMonsterGUI {
         frame.repaint();
     }
 
+    /**
+     * Muestra la interfaz gráfica de usuario.
+     */
     public void mostrarInterfaz() {
         frame.setVisible(true);
     }
