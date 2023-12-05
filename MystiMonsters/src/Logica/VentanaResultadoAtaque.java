@@ -3,19 +3,27 @@ package Logica;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * La clase VentanaResultadoAtaque representa una ventana que muestra el resultado de un ataque.
+ */
 public class VentanaResultadoAtaque {
-    private Monstruo monstruo;
-    private int ataqueSeleccionado;
-    private Mapa mapa; // Agrega una instancia de la clase Mapa
+    private Monstruo monstruo; // Monstruo afectado por el ataque
+    private int ataqueSeleccionado; // Número del ataque realizado
 
-
+    /**
+     * Constructor de la clase VentanaResultadoAtaque.
+     *
+     * @param monstruo          El Monstruo afectado por el ataque.
+     * @param ataqueSeleccionado El número del ataque realizado.
+     */
     public VentanaResultadoAtaque(Monstruo monstruo, int ataqueSeleccionado) {
         this.monstruo = monstruo;
         this.ataqueSeleccionado = ataqueSeleccionado;
-
-        this.mapa = mapa; // Inicializa la instancia de Mapa
     }
 
+    /**
+     * Método para mostrar la ventana de resultado de ataque.
+     */
     public void mostrar() {
         // Crear el marco de la ventana de resultado
         JFrame ventanaResultado = new JFrame("Resultado del Ataque");
@@ -27,8 +35,6 @@ public class VentanaResultadoAtaque {
         JLabel etiquetaResultado = new JLabel("Ataque realizado: " + ataqueSeleccionado);
         JLabel etiquetaMensaje = new JLabel("Monstruo destruido y añadido a la mochila");
 
-
-
         // Agregar componentes al panel de resultado
         panelResultado.add(etiquetaResultado);
         panelResultado.add(etiquetaMensaje);
@@ -39,17 +45,5 @@ public class VentanaResultadoAtaque {
         ventanaResultado.setLocationRelativeTo(null);
         ventanaResultado.add(panelResultado);
         ventanaResultado.setVisible(true);
-
-
-        // Después de mostrar el mensaje, carga el mapa2.png
-        if (mapa != null) {
-            mapa.cargarNuevoMapa("Imagenes/mapa2.png");
-        }
     }
-}
-
-
-	
-	
-	
 }
